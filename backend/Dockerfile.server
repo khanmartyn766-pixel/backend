@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY backend/package.json ./
+RUN npm install
+
+COPY backend ./
+COPY seed_bank.json /seed_bank.json
+
+RUN chmod +x ./scripts/start-server.sh
+RUN npm run prisma:generate && npm run build
+
+EXPOSE 3000
+
+CMD ["./scripts/start-server.sh"]
