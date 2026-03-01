@@ -1,0 +1,62 @@
+<view class="container">
+  <view class="card">
+    <view class="title">专升本心理学刷题</view>
+    <view class="subtle">题库已内置，可直接开始练习</view>
+  </view>
+
+  <view class="card" wx:if="{{authRequired && userProfile}}">
+    <view class="section-title">当前学生</view>
+    <view class="subtle">姓名：{{userProfile.student.name}}</view>
+    <view class="subtle">学号：{{userProfile.student.studentNo}}</view>
+    <view class="subtle">班级：{{userProfile.student.className || '未设置'}}</view>
+    <view class="subtle">设备：{{userProfile.device.boundDevices}} / {{userProfile.device.maxDevices}}</view>
+    <button class="btn-ghost" style="margin-top: 12rpx;" bindtap="onLogout">退出登录</button>
+  </view>
+
+  <view class="card">
+    <view class="section-title">学习统计</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{stats.answered}}</view>
+        <view class="stat-label">累计作答</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{stats.correct}}</view>
+        <view class="stat-label">累计正确</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{stats.wrong}}</view>
+        <view class="stat-label">累计错误</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{wrongCount}}</view>
+        <view class="stat-label">错题条目</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">练习设置</view>
+
+    <view class="field-label">章节</view>
+    <picker mode="selector" range="{{chapterLabels}}" value="{{chapterIndex}}" bindchange="onChangeChapter">
+      <view class="picker">{{chapterLabels[chapterIndex]}}</view>
+    </picker>
+
+    <view class="field-label">范围</view>
+    <picker mode="selector" range="{{scopeLabels}}" value="{{scopeIndex}}" bindchange="onChangeScope">
+      <view class="picker">{{scopeLabels[scopeIndex]}}</view>
+    </picker>
+
+    <view class="field-label">模式</view>
+    <picker mode="selector" range="{{modeLabels}}" value="{{modeIndex}}" bindchange="onChangeMode">
+      <view class="picker">{{modeLabels[modeIndex]}}</view>
+    </picker>
+
+    <view class="subtle" style="margin-top: 12rpx;">当前题库：{{bankCount}} 题</view>
+
+    <button class="btn-primary" style="margin-top: 18rpx;" bindtap="onStartPractice">开始练习</button>
+    <button class="btn-ghost" style="margin-top: 12rpx;" bindtap="onOpenWrongbook">查看错题本</button>
+    <button class="btn-ghost" style="margin-top: 12rpx;" bindtap="onResetProgress">重置进度和错题</button>
+  </view>
+</view>

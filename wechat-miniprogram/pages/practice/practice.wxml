@@ -1,0 +1,48 @@
+<view class="container" wx:if="{{question}}">
+  <view class="card">
+    <view class="meta-row">
+      <text class="meta">第 {{index}} / {{total}} 题</text>
+      <text class="badge {{typeBadgeClass}}">{{questionTypeLabel}}</text>
+    </view>
+    <view class="chapter">{{question.chapter}}</view>
+    <view class="stem">{{question.stem}}</view>
+  </view>
+
+  <view class="card" wx:if="{{isObjective}}">
+    <view
+      wx:for="{{question.options}}"
+      wx:key="key"
+      class="option {{selectedMap[item.key] ? 'option-selected' : ''}} {{submitted ? 'option-locked' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTapOption"
+    >
+      <text class="option-key">{{item.key}}</text>
+      <text class="option-text">{{item.text}}</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{isShort}}">
+    <textarea
+      class="short-input"
+      maxlength="3000"
+      placeholder="请输入你的作答内容..."
+      value="{{shortInput}}"
+      bindinput="onInputShort"
+      disabled="{{submitted}}"
+    />
+  </view>
+
+  <view class="card" wx:if="{{submitted && feedback}}">
+    <view class="feedback-title {{feedback.statusClass}}">{{feedback.title}}</view>
+    <view class="feedback-line" wx:if="{{feedback.userAnswer}}">你的答案：{{feedback.userAnswer}}</view>
+    <view class="feedback-line">参考答案：{{feedback.answer}}</view>
+    <view class="feedback-line" wx:if="{{feedback.explanation}}">解析：{{feedback.explanation}}</view>
+  </view>
+
+  <view class="card action-card">
+    <button class="btn-ghost" bindtap="onPrev" disabled="{{!canPrev}}">上一题</button>
+    <button class="btn-primary" bindtap="onSubmit" disabled="{{submitted}}">{{submitBtnText}}</button>
+    <button class="btn-ghost" bindtap="onNext" disabled="{{!canNext}}">下一题</button>
+    <button class="btn-ghost" bindtap="onFinish">结束本次练习</button>
+  </view>
+</view>

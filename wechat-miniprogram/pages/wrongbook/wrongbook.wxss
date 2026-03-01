@@ -1,0 +1,31 @@
+.empty {
+  text-align: center;
+  color: #607d8b;
+  font-size: 26rpx;
+}
+
+.wrong-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.wrong-chapter {
+  color: #607d8b;
+  font-size: 22rpx;
+}
+
+.wrong-stem {
+  font-size: 28rpx;
+  line-height: 1.55;
+  color: #1f333b;
+  margin-bottom: 12rpx;
+}
+
+.wrong-line {
+  font-size: 24rpx;
+  color: #36515b;
+  line-height: 1.55;
+  margin-top: 6rpx;
+}

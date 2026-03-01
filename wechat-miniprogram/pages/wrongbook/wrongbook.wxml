@@ -1,0 +1,24 @@
+<view class="container">
+  <view class="card">
+    <view class="title">错题本</view>
+    <view class="subtle">共 {{items.length}} 条错题记录</view>
+    <button class="btn-ghost" style="margin-top: 12rpx;" bindtap="onClearAll">清空错题本</button>
+  </view>
+
+  <view class="card" wx:if="{{!items.length}}">
+    <view class="empty">暂无错题，继续加油。</view>
+  </view>
+
+  <block wx:for="{{items}}" wx:key="questionId">
+    <view class="card">
+      <view class="wrong-meta">
+        <text class="wrong-chapter">{{item.chapter}}</text>
+        <text class="badge badge-danger">错 {{item.wrongCount}} 次</text>
+      </view>
+      <view class="wrong-stem">{{item.stem}}</view>
+      <view class="wrong-line">你的上次答案：{{item.lastUserAnswer}}</view>
+      <view class="wrong-line">正确答案：{{item.answerText || answerMap[item.questionId]}}</view>
+      <view class="wrong-line" wx:if="{{item.explanation}}">解析：{{item.explanation}}</view>
+    </view>
+  </block>
+</view>

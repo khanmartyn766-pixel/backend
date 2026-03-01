@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>专升本心理学刷题</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <main class="app-shell">
+      <header class="hero">
+        <h1>专升本心理学刷题</h1>
+        <p>Word 导入题库，自动生成练习，支持错题本和进度统计。</p>
+      </header>
+
+      <section class="panel import-panel">
+        <h2>1. 导入题库</h2>
+        <p class="hint">
+          支持 <code>.docx</code> 和 <code>.txt</code>，建议使用“题号 + 选项 +
+          答案 + 解析”格式。
+        </p>
+        <div class="import-row">
+          <input id="fileInput" type="file" accept=".docx,.txt" />
+          <button id="importBtn" class="btn primary">导入并生成题库</button>
+          <button id="clearBankBtn" class="btn ghost">清空题库</button>
+        </div>
+        <p id="importStatus" class="status">未导入题库</p>
+      </section>
+
+      <section class="panel control-panel">
+        <h2>2. 开始刷题</h2>
+        <div class="control-grid">
+          <label>
+            模式
+            <select id="modeSelect">
+              <option value="sequential">顺序</option>
+              <option value="random">随机</option>
+            </select>
+          </label>
+          <label>
+            章节
+            <select id="chapterSelect">
+              <option value="all">全部章节</option>
+            </select>
+          </label>
+          <label>
+            范围
+            <select id="scopeSelect">
+              <option value="all">全部题目</option>
+              <option value="wrong">仅错题</option>
+            </select>
+          </label>
+          <label>
+            练习类型
+            <select id="practiceTypeSelect">
+              <option value="practice">日常练习</option>
+              <option value="exam">模拟考试</option>
+            </select>
+          </label>
+          <label id="examCountWrap" class="hidden">
+            考试题量
+            <input id="examCountInput" type="number" min="1" max="200" value="50" />
+          </label>
+          <label id="examDurationWrap" class="hidden">
+            考试时长(分钟)
+            <input
+              id="examDurationInput"
+              type="number"
+              min="1"
+              max="300"
+              value="60"
+            />
+          </label>
+        </div>
+        <div class="control-actions">
+          <button id="startBtn" class="btn primary">开始练习</button>
+          <button id="resetProgressBtn" class="btn ghost">重置进度</button>
+        </div>
+        <div class="stats" id="stats"></div>
+      </section>
+
+      <section class="panel quiz-panel hidden" id="quizPanel">
+        <div class="quiz-head">
+          <h2>题目练习</h2>
+          <div class="quiz-head-right">
+            <span id="quizMeta"></span>
+            <span id="examTimer" class="exam-timer hidden">00:00</span>
+          </div>
+        </div>
+        <div id="questionBox" class="question-box"></div>
+        <div id="optionBox" class="option-box"></div>
+        <div id="feedbackBox" class="feedback-box"></div>
+        <div class="quiz-actions">
+          <button id="prevBtn" class="btn ghost hidden">上一题</button>
+          <button id="clearAnswerBtn" class="btn ghost hidden">清空本题答案</button>
+          <button id="submitBtn" class="btn secondary hidden">提交答案</button>
+          <button id="submitExamBtn" class="btn ghost hidden">交卷</button>
+          <button id="nextBtn" class="btn primary hidden">下一题</button>
+        </div>
+        <div id="answerCardPanel" class="answer-card hidden">
+          <div class="answer-card-head">
+            <strong>答题卡</strong>
+            <div class="answer-card-tools">
+              <span id="answerCardStats"></span>
+              <select id="answerCardFilterSelect">
+                <option value="all">全部</option>
+                <option value="answered">已答</option>
+                <option value="unanswered">未答</option>
+              </select>
+            </div>
+          </div>
+          <div id="answerCardGrid" class="answer-card-grid"></div>
+        </div>
+      </section>
+
+      <section class="panel exam-result hidden" id="examResultPanel">
+        <h2>模拟考试成绩</h2>
+        <div id="examSummary" class="exam-summary"></div>
+        <div class="exam-result-tools">
+          <label for="examResultFilterSelect">明细筛选</label>
+          <select id="examResultFilterSelect">
+            <option value="all">全部</option>
+            <option value="fail">仅错题</option>
+            <option value="unanswered">仅未答</option>
+            <option value="pass">仅正确</option>
+          </select>
+        </div>
+        <div id="examResultList" class="exam-result-list"></div>
+      </section>
+
+      <section class="panel wrong-panel">
+        <div class="wrong-head">
+          <h2>错题本</h2>
+          <div class="wrong-actions">
+            <button id="exportWrongTxtBtn" class="btn ghost">导出TXT</button>
+            <button id="exportWrongWordBtn" class="btn ghost">导出Word</button>
+            <button id="clearWrongBtn" class="btn ghost">清空错题本</button>
+          </div>
+        </div>
+        <div id="wrongList" class="wrong-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

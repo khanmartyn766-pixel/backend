@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="card">
+    <view class="title">学生专用入口</view>
+  </view>
+
+  <view class="card" wx:if="{{apiBaseUrl}}">
+    <view class="mode-switch">
+      <view class="mode-item {{mode === 'login' ? 'mode-active' : ''}}" data-mode="login" bindtap="onSwitchMode">登录</view>
+      <view class="mode-item {{mode === 'register' ? 'mode-active' : ''}}" data-mode="register" bindtap="onSwitchMode">首次注册</view>
+    </view>
+
+    <view class="field-label">手机号</view>
+    <input class="input" type="number" maxlength="11" placeholder="请输入手机号" value="{{phone}}" bindinput="onInputPhone" />
+
+    <view class="field-label" wx:if="{{mode === 'register'}}">邀请码</view>
+    <input class="input" wx:if="{{mode === 'register'}}" maxlength="32" placeholder="请输入邀请码" value="{{inviteCode}}" bindinput="onInputInviteCode" />
+
+    <view class="field-label">密码</view>
+    <input class="input" password maxlength="64" placeholder="请输入密码（至少8位）" value="{{password}}" bindinput="onInputPassword" />
+
+    <view class="field-label" wx:if="{{mode === 'register'}}">昵称（可选）</view>
+    <input class="input" wx:if="{{mode === 'register'}}" maxlength="30" placeholder="请输入昵称" value="{{nickname}}" bindinput="onInputNickname" />
+
+    <button class="btn-primary" style="margin-top: 16rpx;" bindtap="onSubmit" loading="{{loading}}">
+      {{mode === 'login' ? '登录' : '验证并注册'}}
+    </button>
+  </view>
+
+  <view class="card" wx:if="{{!apiBaseUrl}}">
+    <view class="error">未配置后端地址，请在 <text class="mono">config.js</text> 设置 <text class="mono">API_BASE_URL</text></view>
+  </view>
+</view>

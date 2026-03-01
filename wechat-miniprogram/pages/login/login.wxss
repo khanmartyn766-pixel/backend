@@ -1,0 +1,47 @@
+.mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10rpx;
+  margin-bottom: 14rpx;
+}
+
+.mode-item {
+  text-align: center;
+  border: 1rpx solid #d8e6ec;
+  border-radius: 999rpx;
+  padding: 12rpx 10rpx;
+  color: #4d6b75;
+  background: #f6fbfd;
+}
+
+.mode-active {
+  color: #ffffff;
+  background: #0f766e;
+  border-color: #0f766e;
+}
+
+.field-label {
+  margin-top: 10rpx;
+  margin-bottom: 6rpx;
+  color: #3c5460;
+  font-size: 24rpx;
+}
+
+.input {
+  border: 1rpx solid #d8e6ec;
+  background: #f8fcfd;
+  border-radius: 12rpx;
+  padding: 14rpx;
+  font-size: 26rpx;
+  color: #1f3942;
+}
+
+.error {
+  color: #c92a2a;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.mono {
+  font-family: Menlo, Monaco, monospace;
+}

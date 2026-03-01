@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>老师后台 - 学生管理</title>
+    <style>
+      :root {
+        --bg: #f3f6f9;
+        --card: #ffffff;
+        --text: #1f2d35;
+        --sub: #5e7783;
+        --brand: #0f766e;
+        --danger: #c92a2a;
+        --ok: #087f5b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      h1, h2 { margin: 0 0 12px; }
+      .wrap { max-width: 1200px; margin: 0 auto; }
+      .card {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 8px 28px rgba(15, 118, 110, 0.08);
+        margin-bottom: 16px;
+      }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      input, select, textarea {
+        border: 1px solid #cfdee6;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 14px;
+        background: #fafdff;
+      }
+      textarea { width: 100%; min-height: 140px; resize: vertical; }
+      button {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        cursor: pointer;
+        background: #e4f3f0;
+        color: var(--brand);
+        font-weight: 600;
+      }
+      button.primary { background: var(--brand); color: white; }
+      button.danger { background: #ffe5e5; color: var(--danger); }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th, td {
+        border-bottom: 1px solid #edf2f5;
+        padding: 8px 6px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th { color: var(--sub); font-weight: 600; }
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+      .tag.active { background: #d9f7ec; color: var(--ok); }
+      .tag.frozen { background: #ffe3e3; color: var(--danger); }
+      .status { font-size: 13px; color: var(--sub); }
+      .muted { color: var(--sub); font-size: 12px; }
+      .small { font-size: 12px; }
+      @media (max-width: 900px) {
+        body { padding: 12px; }
+        table { display: block; overflow-x: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>老师后台 - 学生白名单管理</h1>
+        <div class="row">
+          <label>API Base: <input id="apiBase" size="32" value="https://my-backend-228486-4-1406654504.sh.run.tcloudbase.com/api/v1" /></label>
+          <label>Admin Secret: <input id="adminSecret" type="password" size="28" placeholder="输入 ADMIN_SECRET" /></label>
+          <button id="btnLoad" class="primary">加载学生列表</button>
+          <button id="btnTemplate">下载CSV模板</button>
+        </div>
+        <p id="globalStatus" class="status">就绪</p>
+      </div>
+
+      <div class="card">
+        <h2>筛选</h2>
+        <div class="row">
+          <label>状态
+            <select id="filterStatus">
+              <option value="">全部</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="FROZEN">FROZEN</option>
+            </select>
+          </label>
+          <label>班级 <input id="filterClass" placeholder="如：心理学1班" /></label>
+          <label>关键词 <input id="filterKeyword" placeholder="学号/姓名/手机号" /></label>
+          <button id="btnFilter" class="primary">查询</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>新增 / 更新学生</h2>
+        <div class="row">
+          <input id="fStudentNo" placeholder="学号*" />
+          <input id="fName" placeholder="姓名*" />
+          <input id="fPhone" placeholder="手机号*" />
+          <input id="fClassName" placeholder="班级" />
+          <input id="fInviteCode" placeholder="邀请码*" />
+          <input id="fMaxDevices" type="number" min="1" max="10" value="1" placeholder="设备上限" />
+          <input id="fExpiresAt" placeholder="到期日 2026-12-31" />
+          <select id="fStatus">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="FROZEN">FROZEN</option>
+          </select>
+          <button id="btnUpsert" class="primary">保存学生</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>CSV 批量导入</h2>
+        <p class="muted">第一行必须是表头：studentNo,name,phone,className,inviteCode,maxDevices,expiresAt,status</p>
+        <textarea id="csvText" placeholder="粘贴CSV内容"></textarea>
+        <div class="row">
+          <button id="btnImportCsv" class="primary">导入CSV</button>
+          <span id="importStatus" class="status"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>学生列表</h2>
+        <div class="small muted" id="listMeta">未加载</div>
+        <table>
+          <thead>
+            <tr>
+              <th>学号</th>
+              <th>姓名</th>
+              <th>手机号</th>
+              <th>班级</th>
+              <th>状态</th>
+              <th>邀请码</th>
+              <th>设备</th>
+              <th>到期</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="./teacher_admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/practice/practice",
+    "pages/wrongbook/wrongbook"
+  ],
+  "window": {
+    "navigationBarTitleText": "专升本心理学刷题",
+    "navigationBarBackgroundColor": "#0f766e",
+    "navigationBarTextStyle": "white",
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#f4f8fb"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

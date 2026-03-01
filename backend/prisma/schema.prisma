@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QuestionType {
+  single
+  multiple
+  judge
+  short
+}
+
+enum MembershipPlan {
+  FREE
+  PRO
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+}
+
+enum StudentStatus {
+  ACTIVE
+  FROZEN
+}
+
+model User {
+  id               String           @id @default(cuid())
+  phone            String           @unique
+  passwordHash     String
+  nickname         String?
+  studentAccountId String?          @unique
+  studentAccount   StudentAccount?  @relation(fields: [studentAccountId], references: [id], onDelete: SetNull)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  membership       Membership?
+  practiceRecords  PracticeRecord[]
+  devices          UserDevice[]
+}
+
+model Membership {
+  id        String           @id @default(cuid())
+  userId    String           @unique
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      MembershipPlan   @default(FREE)
+  status    MembershipStatus @default(ACTIVE)
+  startedAt DateTime         @default(now())
+  expiredAt DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model QuestionBank {
+  id        String     @id @default(cuid())
+  name      String
+  version   String     @unique
+  subject   String     @default("psychology")
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  questions Question[]
+}
+
+model Question {
+  id          String       @id @default(cuid())
+  bankId      String
+  bank        QuestionBank @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  externalId  String?
+  number      Int
+  chapter     String
+  type        QuestionType
+  stem        String
+  options     Json
+  answer      Json
+  answerText  String?
+  explanation String?
+  sourceFile  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  practiceRecords PracticeRecord[]
+
+  @@unique([bankId, number])
+  @@index([chapter, type])
+}
+
+model PracticeRecord {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selected   Json
+  correct    Boolean
+  mode       String   @default("practice")
+  answeredAt DateTime @default(now())
+
+  @@index([userId, questionId])
+  @@index([userId, correct])
+}
+
+model StudentAccount {
+  id         String       @id @default(cuid())
+  studentNo  String       @unique
+  name       String
+  phone      String
+  className  String?
+  inviteCode String
+  status     StudentStatus @default(ACTIVE)
+  maxDevices Int          @default(1)
+  expiresAt  DateTime?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  user       User?
+
+  @@index([phone])
+}
+
+model UserDevice {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId    String
+  deviceName  String?
+  platform    String?
+  lastLoginAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, deviceId])
+  @@index([deviceId])
+}
